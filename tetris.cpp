@@ -45,10 +45,10 @@ int main() {
 
   /* Declare Variables
    */
-  int i, j, n, dx = 0, colorNum = 1;
+  int i, j, n, dx = 0, colorNum = 1 + rand() % 7;
   bool rotate = false;
   float time, timer = 0, delay = 0.3;
-  Point a[4] = {0}, b[4];
+  Point a[4] = {0}, b[4] = {0};
   Texture t1, t2, t3;
 
   Font font;
@@ -64,7 +64,7 @@ int main() {
   restart_message.setString("Press r to restart");
   end_message.setCharacterSize(30);
   restart_message.setCharacterSize(20);
-  end_message.setColor(Color::White);
+  end_message.setFillColor(Color::White);
   end_message.setStyle(Text::Bold);
 
 
@@ -81,10 +81,6 @@ int main() {
   /* Create a Drawable representation of the Texture t as Sprite s
    */
   Sprite s(t1), background(t2), frame(t3);
-
-  /* Define a rectangle, located at (0, 0) with a size of 18x18.
-   */
-  s.setTextureRect(IntRect(0,0,18,18));
 
   Clock clock;
 
@@ -202,14 +198,15 @@ void Rotate(Point a[]) {
 
 // Tick Function
 void Tick(Point a[], Point b[], int &colorNum) {
+  static bool first = true;
   int i, n;
   for (i = 0; i < 4; i++) {
     b[i] = a[i];
     a[i].y += 1;
   }
-  if (!check(a)) {
+  if (!check(a) || first) {
     for (i = 0; i < 4; i++) {
-      field[(b[i].y)][(b[i].x)] = colorNum;
+      if (!first) field[(b[i].y)][(b[i].x)] = colorNum;
     }
     clearRow();
     colorNum = 1 + rand() % 7;
@@ -218,6 +215,7 @@ void Tick(Point a[], Point b[], int &colorNum) {
       a[i].x = figures[n][i] % 2;
       a[i].y = figures[n][i] / 2;
     }
+    first = false;
   }
 }
 
@@ -225,8 +223,10 @@ void Tick(Point a[], Point b[], int &colorNum) {
 bool check(Point a[]) {
   int i;
   for (i = 0; i < 4; i++) {
-    if (a[i].x < 0 || a[i].x >= N || a[i].y >= M) return false;
-    else if (field[a[i].y][a[i].x]) return false;
+    if (a[i].x < 0  || a[i].x >= N || 
+        a[i].y >= M || field[a[i].y][a[i].x]) {
+      return false;
+    } 
   }
   return true;
 }
@@ -234,22 +234,22 @@ bool check(Point a[]) {
 // Clear A Row out if full
 void clearRow(){
   int i, j;
-  bool is_not_full = true;
-  for(i = M - 1; i > -1; i--) {
-   for(j = N - 1; j > -1; j--) {
-     if(field[i][j] == 0) {
-       is_not_full = false; 
-     }
-   }
-   if(is_not_full){
-     for(j = 0; j < N; j++) {
-       field[i][j] = 0;
-     }
-     moveEveryDown(i);
-     i += 1;
-   }
-   is_not_full= true;
- }
+  for (i = M - 1; i > -1; i--) {
+    bool is_not_full = true;
+    for (j = N - 1; j > -1; j--) {
+      if (field[i][j] == 0) {
+        is_not_full = false;
+        break;
+      }
+    }
+    if (is_not_full) {
+      for(j = 0; j < N; j++) {
+        field[i][j] = 0;
+      }
+      moveEveryDown(i);
+      i += 1;
+    }
+  }
 }
 
 // Move everything above the cleared row down one
