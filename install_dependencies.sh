@@ -7,6 +7,8 @@ if [ "$COMMAND" = "pacman" ]; then
     pacman -Sy libsfml-dev
 elif [ "$COMMAND" = "apt-get" ]; then
     apt-get install libsfml-dev
+elif [ "$COMMAND" = "brew" ]; then
+    brew install sfml
 else
     echo "Invalid Argument given"
 fi
