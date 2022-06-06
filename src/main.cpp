@@ -2,6 +2,7 @@
 // Matthew Edge
 
 #include <iostream>
+#include <string>
 #include <SFML/Graphics.hpp>
 #include <time.h>
 using namespace sf;
@@ -12,6 +13,11 @@ const int WIDTH = 320;
 const int HEIGHT = 480;
 const int M = 20;
 const int N = 10;
+const std::string FONT_FILE_PATH = "../share/fonts/Pacifico.ttf";
+const std::string IMG_FILE_PATH = "../share/images";
+const std::string TILES_IMG = IMG_FILE_PATH + "/tiles.png";
+const std::string BACKGROUND_IMG = IMG_FILE_PATH + "/background.png";
+const std::string FRAME_IMG = IMG_FILE_PATH + "/frame.png";
 
 int field[M][N] = {0};
 
@@ -45,14 +51,14 @@ int main() {
 
   /* Declare Variables
    */
-  int i, j, n, dx = 0, colorNum = 1 + rand() % 7;
+  int i, j, dx = 0, colorNum = 1 + rand() % 7;
   bool rotate = false;
   float time, timer = 0, delay = 0.3;
-  Point a[4] = {0}, b[4] = {0};
+  Point a[4] = {0,0}, b[4] = {0,0};
   Texture t1, t2, t3;
 
   Font font;
-  if (!font.loadFromFile("fonts/Pacifico.ttf")) std::cout << "Couldn't load font file!" << std::endl;
+  if (!font.loadFromFile(FONT_FILE_PATH)) std::cout << "Couldn't load font file!" << std::endl;
 
   /* Set up Text for losing
    */
@@ -74,9 +80,9 @@ int main() {
 
   /* Store pixels from tiles.png in Texture object.
    */
-  t1.loadFromFile("images/tiles.png");
-  t2.loadFromFile("images/background.png");
-  t3.loadFromFile("images/frame.png");  
+  t1.loadFromFile(TILES_IMG);
+  t2.loadFromFile(BACKGROUND_IMG);
+  t3.loadFromFile(FRAME_IMG);
 
   /* Create a Drawable representation of the Texture t as Sprite s
    */
