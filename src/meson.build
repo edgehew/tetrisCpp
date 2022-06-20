@@ -17,6 +17,11 @@ tetris_deps = [
 
 tetris_src = [
   'main.cpp',
+  'game/GameController.cpp',
+  'game/GameWindow.cpp',
+  'helpers/Path.cpp',
+  'main.cpp',
+  #'tetrominos/ITetromino.cpp',
 ]
 
 executable(

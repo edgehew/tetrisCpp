@@ -1,5 +1,6 @@
 // Matthew Edge
 
+#include "GameController.hpp"
 #include "GameWindow.hpp"
 
 #include <chrono>
@@ -24,9 +25,8 @@ int main() {
         DEFAULT_IMG_FILE_PATH
     );
 
-    while(true) {
-        std::cout << "Waiting" << std::endl;
-        std::this_thread::sleep_for(std::chrono::seconds(1));
-    }
+    game::GameController controller(window);
+    controller.runGame();
+    
     return 0;
 }
