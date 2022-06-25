@@ -6,7 +6,20 @@ namespace game {
 
 GameController::GameController(GameWindow &window)
     : window_(window) 
+    , gameState_(GameState::INITIALIZING)
 {
+}
+
+void GameController::runGame() {
+    gameState_ = GameState::RUNNING;
+    while(!isExiting()) {
+
+        handleEvents();
+
+        window_.renderGame();
+    }
+
+    window_.close();
 }
 
 void GameController::handleEvents() {
@@ -16,7 +29,7 @@ void GameController::handleEvents() {
     Event e;
     while (window.pollEvent(e)) {
         if (e.type == Event::Closed) {
-            window_.close();
+            exitGame();
         }
 
         if (e.type == Event::KeyPressed) {
@@ -24,7 +37,6 @@ void GameController::handleEvents() {
             switch (key) {
                 case Keyboard::Escape :
                     pauseGame();
-                    std::cout << "Escape captured\n";
                     break;
                 case Keyboard::Up :
                 case Keyboard::Left :
@@ -38,14 +50,14 @@ void GameController::handleEvents() {
 }
 
 void GameController::pauseGame() {
-    window_.pauseGame();
+    gameState_ = GameState::PAUSED;
     auto &window = window_.getRenderWindow();
     Event e;
-    while (window_.isPaused()) {
+    while (gameState_ == GameState::PAUSED) {
         window.pollEvent(e);
         window_.renderPauseMenu();
         if (e.type == Event::Closed) {
-            window_.close();
+            exitGame();
             return;
         }
 
@@ -53,13 +65,13 @@ void GameController::pauseGame() {
             auto key = e.key.code;
             switch (key) {
                 case Keyboard::Q :
-                    window_.close();
-                    break;
+                    exitGame();
+                    return;
                 case Keyboard::C :
-                    window_.resumeGame();
+                    resumeGame();
                     break;
                 case Keyboard::R :
-                    window_.resetGame();
+                    resetGame();
                     break;
                 default:
                     break;
@@ -68,14 +80,16 @@ void GameController::pauseGame() {
     }
 }
 
+void GameController::resumeGame() {
+    gameState_ = GameState::RUNNING;
+}
 
-void GameController::runGame() {
-    while(window_.isOpen()) {
+void GameController::resetGame() {
+    gameState_ = GameState::INITIALIZING;
+}
 
-        handleEvents();
-
-        window_.renderGame();
-    }
+void GameController::exitGame() {
+    gameState_ = GameState::EXITING;
 }
 
 } // namespace game

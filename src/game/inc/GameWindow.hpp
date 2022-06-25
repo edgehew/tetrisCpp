@@ -36,9 +36,6 @@ private:
     Sprite backgroundSprite_;
     Sprite frameSprite_;
 
-    std::atomic<bool> isRunning_;
-    std::atomic<bool> isQuitting_;
-
 public:
     GameWindow(
         const uint width, 
@@ -49,14 +46,9 @@ public:
     void renderGame();
     void renderPauseMenu();
     void renderEndGame();
-    bool isPaused();
-    void pauseGame();
-    void resumeGame();
-    void quitGame();
-    void resetGame();
     bool isOpen() { return window_.isOpen(); }
     RenderWindow& getRenderWindow() { return window_; }
-    void close();
+    void close() { return window_.close(); }
 };
 
 } // namespace game

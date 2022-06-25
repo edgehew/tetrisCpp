@@ -17,8 +17,6 @@ GameWindow::GameWindow(
     , window_({width_, height_}, TETRIS_TITLE)
     , fontPath_(fontPath)
     , imgPath_(imgPath)
-    , isRunning_(false)
-    , isQuitting_(false)
 {
     if (!font_.loadFromFile(fontPath_)) {
         std::string error = "Couldn't load font file! Path was: '" + fontPath_ + "' could not be loaded!";
@@ -61,13 +59,11 @@ void GameWindow::renderGame() {
 }
 
 void GameWindow::renderPauseMenu() {
-    if (!isRunning_) {
-        pauseMessage_.setPosition(30,400);
-        pauseMessage_.setCharacterSize(14);
-        window_.draw(pauseSprite_);
-        window_.draw(pauseMessage_);
-        window_.display();
-    }
+    pauseMessage_.setPosition(30,400);
+    pauseMessage_.setCharacterSize(14);
+    window_.draw(pauseSprite_);
+    window_.draw(pauseMessage_);
+    window_.display();
 }
 
 void GameWindow::renderEndGame() {
@@ -76,34 +72,5 @@ void GameWindow::renderEndGame() {
     window_.draw(endMessage_);
     window_.draw(restartMessage_);
 }
-
-bool GameWindow::isPaused() {
-    return !isRunning_ && !isQuitting_;
-}
-
-void GameWindow::pauseGame() {
-    isRunning_ = false;
-}
-
-void GameWindow::resumeGame() {
-    isRunning_ = true;
-    isQuitting_ = false;
-}
-
-void GameWindow::quitGame() { 
-    isRunning_ = false;
-    isQuitting_ = true;
-}
-
-void GameWindow::resetGame() {
-    isRunning_ = false;
-    isQuitting_ = false;
-}
-
-void GameWindow::close() { 
-    quitGame();
-    window_.close(); 
-}
-
 
 } // namespace game
