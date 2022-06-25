@@ -13,8 +13,6 @@ class GameController {
 
 private:
     GameWindow &window_;
-    std::atomic<bool> isRunning_;
-    std::atomic<bool> isQuitting_;
 
 public:
     GameController(GameWindow &window);

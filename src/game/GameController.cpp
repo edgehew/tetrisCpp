@@ -1,12 +1,11 @@
 #include "inc/GameController.hpp"
 
+#include <iostream>
+
 namespace game {
 
 GameController::GameController(GameWindow &window)
     : window_(window) 
-    , isRunning_(false)
-    , isQuitting_(false)
-    
 {
 }
 
@@ -25,6 +24,7 @@ void GameController::handleEvents() {
             switch (key) {
                 case Keyboard::Escape :
                     pauseGame();
+                    std::cout << "Escape captured\n";
                     break;
                 case Keyboard::Up :
                 case Keyboard::Left :
@@ -41,7 +41,8 @@ void GameController::pauseGame() {
     window_.pauseGame();
     auto &window = window_.getRenderWindow();
     Event e;
-    while (window.pollEvent(e) && window_.isPaused()) {
+    while (window_.isPaused()) {
+        window.pollEvent(e);
         window_.renderPauseMenu();
         if (e.type == Event::Closed) {
             window_.close();
@@ -52,7 +53,7 @@ void GameController::pauseGame() {
             auto key = e.key.code;
             switch (key) {
                 case Keyboard::Q :
-                    window_.quitGame();
+                    window_.close();
                     break;
                 case Keyboard::C :
                     window_.resumeGame();
@@ -69,10 +70,10 @@ void GameController::pauseGame() {
 
 
 void GameController::runGame() {
-    isRunning_ = true;
-    while(isRunning_ && !isQuitting_) {
+    while(window_.isOpen()) {
 
         handleEvents();
+
         window_.renderGame();
     }
 }

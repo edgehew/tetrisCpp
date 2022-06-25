@@ -15,8 +15,8 @@ private:
     const std::string BACKGROUND_IMG = "background.png";
     const std::string FRAME_IMG = "frame.png";
 
-    int width_;
-    int height_;
+    uint width_;
+    uint height_;
     RenderWindow window_;
     const std::string& fontPath_;
     const std::string& imgPath_;
@@ -41,21 +41,22 @@ private:
 
 public:
     GameWindow(
-        const int width, 
-        const int height, 
+        const uint width, 
+        const uint height, 
         const std::string& fontPath,
         const std::string& imgPath);
 
     void renderGame();
-    void pauseGame();
     void renderPauseMenu();
+    void renderEndGame();
     bool isPaused();
+    void pauseGame();
     void resumeGame();
     void quitGame();
     void resetGame();
     bool isOpen() { return window_.isOpen(); }
     RenderWindow& getRenderWindow() { return window_; }
-    void close() { window_.close(); }
+    void close();
 };
 
 } // namespace game

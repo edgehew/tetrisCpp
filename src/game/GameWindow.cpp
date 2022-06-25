@@ -8,15 +8,17 @@
 namespace game {
 
 GameWindow::GameWindow(
-        const int width, 
-        const int height, 
+        const uint width, 
+        const uint height, 
         const std::string& fontPath,
         const std::string& imgPath)
     : width_(width)
     , height_(height) 
-    , window_(VideoMode(width_, height_), TETRIS_TITLE)
+    , window_({width_, height_}, TETRIS_TITLE)
     , fontPath_(fontPath)
     , imgPath_(imgPath)
+    , isRunning_(false)
+    , isQuitting_(false)
 {
     if (!font_.loadFromFile(fontPath_)) {
         std::string error = "Couldn't load font file! Path was: '" + fontPath_ + "' could not be loaded!";
@@ -35,7 +37,7 @@ GameWindow::GameWindow(
     restartMessage_.setCharacterSize(20);
 
     pauseMessage_.setFont(font_);
-    pauseMessage_.setString("PAUSED! Use 'C' to Continue, 'R' to restart and 'Q' to Quit");
+    pauseMessage_.setString("PAUSED!\n  Use 'C' to Continue\n  'R' to restart\n  'Q' to Quit");
 
     tilesTexture_.loadFromFile(helpers::Path::toString({imgPath, TILES_IMG}));
     tilesSprite_ = Sprite(tilesTexture_);
@@ -45,45 +47,63 @@ GameWindow::GameWindow(
 
     frameTexture_.loadFromFile(helpers::Path::toString({imgPath, FRAME_IMG}));
     frameSprite_ = Sprite(frameTexture_);
+
+    window_.setFramerateLimit(60);
 }
+
 void GameWindow::renderGame() {
 
     window_.clear(Color::White);
     window_.draw(backgroundSprite_);
 
-
     window_.draw(frameSprite_);
     window_.display();
 }
 
-void GameWindow::pauseGame() {
-    isRunning_ = false;
-}
-
 void GameWindow::renderPauseMenu() {
     if (!isRunning_) {
-        pauseMessage_.setPosition(80,440); 
+        pauseMessage_.setPosition(30,400);
+        pauseMessage_.setCharacterSize(14);
         window_.draw(pauseSprite_);
         window_.draw(pauseMessage_);
         window_.display();
     }
 }
 
+void GameWindow::renderEndGame() {
+    endMessage_.setPosition(50,400); 
+    restartMessage_.setPosition(80,440); 
+    window_.draw(endMessage_);
+    window_.draw(restartMessage_);
+}
+
 bool GameWindow::isPaused() {
     return !isRunning_ && !isQuitting_;
 }
 
+void GameWindow::pauseGame() {
+    isRunning_ = false;
+}
+
 void GameWindow::resumeGame() {
     isRunning_ = true;
+    isQuitting_ = false;
 }
 
 void GameWindow::quitGame() { 
     isRunning_ = false;
-    isQuitting_ = false;
+    isQuitting_ = true;
 }
 
 void GameWindow::resetGame() {
-
+    isRunning_ = false;
+    isQuitting_ = false;
 }
+
+void GameWindow::close() { 
+    quitGame();
+    window_.close(); 
+}
+
 
 } // namespace game
